@@ -1,0 +1,33 @@
+{
+  "name": "vet-clinic-backend",
+  "version": "1.0.0",
+  "description": "Learning FullStack JavaScript",
+  "keywords": [
+    "MongoDB",
+    "Express",
+    "React",
+    "Node"
+  ],
+  "homepage": "https://github.com/lorelvis-santos/vet-clinic#readme",
+  "bugs": {
+    "url": "https://github.com/lorelvis-santos/vet-clinic/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lorelvis-santos/vet-clinic.git"
+  },
+  "license": "ISC",
+  "author": "Lorelvis Santos",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
