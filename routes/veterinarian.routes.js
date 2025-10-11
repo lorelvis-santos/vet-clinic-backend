@@ -1,9 +1,11 @@
-import express from "express";
+import Router from "express";
+import VeterinarianController from "../controllers/veterinarian.controller.js";
 
-const router = express.Router();
+const router = Router();
+const controller = new VeterinarianController();
 
-router.get("/", (req, res) => {
-    res.send("From /api/veterinarians");
-});
+router.get("/", controller.register);
+router.get("/login", controller.login);
+router.get("/perfil", controller.profile);
 
 export default router;
