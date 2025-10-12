@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { randomUUID } from "crypto";
+import bcrypt from "bcrypt";
 
 // https://mongoosejs.com/docs/schematypes.html
 
@@ -28,13 +30,23 @@ const veterinarianSchema = mongoose.Schema({
         default: null
     },
     token: {
-        type: String
+        type: String,
+        default: () => randomUUID()
     },
     confirmed: {
         type: Boolean,
         default: false
     }
 });
+
+// Añadimos un hook antes de que se guarde.
+veterinarianSchema.pre("save", async function(next) {
+    if (!this.isModified('password') || !this.password)
+        return next();
+
+    const salt = await bcrypt.genSalt(12);
+    this.password = await bcrypt.hash(this.password, salt);
+})
 
 const Veterinarian = mongoose.model("Veterinarian", veterinarianSchema);
 

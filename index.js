@@ -8,6 +8,9 @@ import veterinarianRoutes from "./routes/veterinarian.routes.js"
 dotenv.config();
 
 const app = express();
+
+app.use(express.json());
+
 const port = process.env.PORT || 4000;
 
 connectToDatabase();

@@ -4,8 +4,9 @@ import VeterinarianController from "../controllers/veterinarian.controller.js";
 const router = Router();
 const controller = new VeterinarianController();
 
-router.get("/", controller.register);
+router.post("/", controller.signup);
 router.get("/login", controller.login);
-router.get("/perfil", controller.profile);
+router.get("/verify/:token", controller.verify);
+router.get("/profile", controller.profile);
 
 export default router;
