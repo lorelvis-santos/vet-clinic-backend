@@ -1,4 +1,7 @@
+import bcrypt from "bcrypt";
 import Veterinarian from "../models/veterinarian.model.js";
+import HttpError from "../helpers/HttpError.js";
+import generateJWT from "../helpers/generateJWT.js";
 
 class VeterinarianController {
     // Cosas que debemos hacer:
@@ -10,13 +13,8 @@ class VeterinarianController {
             const exists = await Veterinarian.exists({email: req.body.email});
 
             if (exists) {
-                const error = Error("Email already exists");
-                
-                return res.status(400).json({
-                    ok: false,
-                    message: error.message,
-                    id: null
-                });
+                // 409 -> Conflict
+                throw new HttpError("Email already exists", 409);
             }
 
             const veterinarian = new Veterinarian(req.body);
@@ -44,17 +42,17 @@ class VeterinarianController {
             const { token } = req.params;
 
             if (!token || token === null || token === "") {
-                throw new Error("Invalid token");
+                throw new HttpError("Invalid token", 400);
             }
 
             const user = await Veterinarian.findOne({token});
 
             if (!user) {
-                throw new Error("User not found");
+                throw new HttpError("User not found", 404);
             }
 
             user.token = null;
-            user.confirmed = true;
+            user.verified = true;
 
             await user.save();
 
@@ -75,6 +73,36 @@ class VeterinarianController {
     }
 
     async authenticate(req, res) {
+        const { email, password } = req.body;
+        const user = await Veterinarian.findOne({email});
+
+        try {
+            if (!user) {
+                throw new HttpError("User doesn't exist", 404);
+            }
+
+            if (!user.verified) {
+                throw new HttpError("User isn't verified", 403);
+            }
+
+            if (!(await user.checkPassword(password))) {
+                throw new HttpError("Passwords doesn't match", 401);
+            }
+
+            res.json({
+                ok: true,
+                message: "User authenticated succesfully",
+                token: generateJWT(user.id)
+            })
+        } catch (error) {
+            console.log(error);
+
+            res.status(400).json({
+                ok: false,
+                message: error.message
+            });
+        }
+
         res.json({ url: "From /api/veterinarians/login" });
     }
 

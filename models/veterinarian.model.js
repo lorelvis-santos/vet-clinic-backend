@@ -33,7 +33,7 @@ const veterinarianSchema = mongoose.Schema({
         type: String,
         default: () => randomUUID()
     },
-    confirmed: {
+    verified: {
         type: Boolean,
         default: false
     }
@@ -47,6 +47,10 @@ veterinarianSchema.pre("save", async function(next) {
     const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
 })
+
+veterinarianSchema.methods.checkPassword = async function(plainPassword) {
+    return await bcrypt.compare(plainPassword, this.password);
+}
 
 const Veterinarian = mongoose.model("Veterinarian", veterinarianSchema);
 
