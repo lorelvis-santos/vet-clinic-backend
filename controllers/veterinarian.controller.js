@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { randomUUID } from "crypto";
 import Veterinarian from "../models/veterinarian.model.js";
 import HttpError from "../helpers/HttpError.js";
 import generateJWT from "../helpers/generateJWT.js";
@@ -24,15 +25,16 @@ class VeterinarianController {
 
             res.json({
                 ok: true,
-                id: user.id
+                id: user.id,
+                message: "User registered. Email sent"
             });
         } catch (error) {
             console.log(error);
 
-            res.json({
+            res,status(error.statusCode || 400).json({
                 ok: false,
-                message: error.message,
-                id: null
+                id: null,
+                message: error.message
             });
         }
     }
@@ -63,7 +65,7 @@ class VeterinarianController {
         } catch (error) {
             console.log(error);
 
-            res.status(400).json({
+            res.status(error.statusCode || 400).json({
                 ok: false,
                 message: error.message
             });
@@ -97,7 +99,7 @@ class VeterinarianController {
         } catch (error) {
             console.log(error);
 
-            res.status(400).json({
+            res.status(error.statusCode || 400).json({
                 ok: false,
                 message: error.message
             });
@@ -110,6 +112,47 @@ class VeterinarianController {
         const { veterinarian } = req;
 
         res.json({ profile: veterinarian });
+    }
+
+    async forgotPassword(req, res) {
+        const { email } = req.body;
+
+        try {
+            // Verificar que el email exista
+            const veterinarian = await Veterinarian.findOne({email});
+
+            if (!veterinarian) {
+                throw new HttpError("User doesn't exist", 404);
+            }
+
+            // Generamos un nuevo token y se lo asignamos
+            const token = randomUUID();
+
+            veterinarian.token = token;
+
+            await veterinarian.save();
+
+            res.json({
+                ok: true,
+                message: "Sent email with instructions"
+            });
+
+        } catch (error) {
+            console.log(error)
+
+            return res.status(error.statusCode || 400).json({
+                ok: false,
+                message: error.message
+            })
+        }
+    }
+
+    async checkToken(req, res) {
+
+    }
+
+    async changePassword(req, res) {
+
     }
 }
 
