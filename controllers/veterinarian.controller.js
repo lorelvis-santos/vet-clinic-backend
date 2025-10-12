@@ -107,7 +107,9 @@ class VeterinarianController {
     }
 
     async profile(req, res) {
-        res.json({ url: "From /api/veterinarians/profile" });
+        const { veterinarian } = req;
+
+        res.json({ profile: veterinarian });
     }
 }
 
