@@ -59,7 +59,7 @@ class VeterinarianController {
             await user.save();
 
             res.json({
-                ok,
+                ok: true,
                 message: "User verified succesfully"
             });
         } catch (error) {
@@ -74,7 +74,7 @@ class VeterinarianController {
         res.json({ data: req.params });
     }
 
-    async login(req, res) {
+    async authenticate(req, res) {
         res.json({ url: "From /api/veterinarians/login" });
     }
 
