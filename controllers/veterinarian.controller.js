@@ -1,4 +1,3 @@
-import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
 import Veterinarian from "../models/veterinarian.model.js";
 import HttpError from "../helpers/HttpError.js";
@@ -31,7 +30,7 @@ class VeterinarianController {
         } catch (error) {
             console.log(error);
 
-            res,status(error.statusCode || 400).json({
+            res.status(error.statusCode || 400).json({
                 ok: false,
                 id: null,
                 message: error.message
@@ -40,9 +39,9 @@ class VeterinarianController {
     }
 
     async verify(req, res) {
-        try {
-            const { token } = req.params;
+        const { token } = req.params;
 
+        try {
             if (!token || token === null || token === "") {
                 throw new HttpError("Invalid token", 400);
             }
@@ -50,7 +49,7 @@ class VeterinarianController {
             const user = await Veterinarian.findOne({token});
 
             if (!user) {
-                throw new HttpError("User not found", 404);
+                throw new HttpError("Invalid token", 404);
             }
 
             user.token = null;
@@ -70,15 +69,14 @@ class VeterinarianController {
                 message: error.message
             });
         }
-
-        res.json({ data: req.params });
     }
 
     async authenticate(req, res) {
         const { email, password } = req.body;
-        const user = await Veterinarian.findOne({email});
-
+        
         try {
+            const user = await Veterinarian.findOne({email});
+
             if (!user) {
                 throw new HttpError("User doesn't exist", 404);
             }
@@ -104,8 +102,6 @@ class VeterinarianController {
                 message: error.message
             });
         }
-
-        res.json({ url: "From /api/veterinarians/login" });
     }
 
     async profile(req, res) {
@@ -148,11 +144,65 @@ class VeterinarianController {
     }
 
     async checkToken(req, res) {
+        const { token } = req.params;
 
+        try {
+            if (!token || token === null || token === "") {
+                throw new HttpError("Invalid token", 400);
+            }
+
+            const user = await Veterinarian.findOne({token});
+
+            if (!user) {
+                throw new HttpError("User not found", 404);
+            }
+
+            res.json({
+                ok: true,
+                message: "Token is valid and user exists"
+            });
+        } catch (error) {
+            console.log(error);
+
+            res.status(error.statusCode || 400).json({
+                ok: false,
+                message: error.message
+            });
+        }
     }
 
     async changePassword(req, res) {
+        const { token } = req.params;
+        const { password } = req.body;
 
+        try {
+            if (!token || token === null || token === "") {
+                throw new HttpError("Invalid token", 400);
+            }
+
+            const user = await Veterinarian.findOne({token});
+
+            if (!user) {
+                throw new HttpError("User not found", 404);
+            }
+
+            user.token = null;
+            user.password = password;
+
+            await user.save();
+
+            res.json({
+                ok: true,
+                message: "Password changed succesfully"
+            });
+        } catch (error) {
+            console.log(error);
+
+            res.status(error.statusCode || 400).json({
+                ok: false,
+                message: error.message
+            });
+        }
     }
 }
 

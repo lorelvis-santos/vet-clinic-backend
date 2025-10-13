@@ -10,6 +10,9 @@ router.post("/", controller.signup);
 router.post("/login", controller.authenticate);
 router.get("/verify/:token", controller.verify);
 router.post("/forgot-password", controller.forgotPassword);
+router.route("/forgot-password/:token")
+    .get(controller.checkToken)
+    .post(controller.changePassword);
 
 // Parte privada
 router.get("/profile", requireAuth, controller.profile);
