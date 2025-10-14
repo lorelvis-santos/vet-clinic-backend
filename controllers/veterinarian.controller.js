@@ -30,7 +30,7 @@ class VeterinarianController {
         } catch (error) {
             console.log(error);
 
-            res.status(error.statusCode || 400).json({
+            res.status(error.code || 400).json({
                 ok: false,
                 id: null,
                 message: error.message
@@ -64,7 +64,7 @@ class VeterinarianController {
         } catch (error) {
             console.log(error);
 
-            res.status(error.statusCode || 400).json({
+            res.status(error.code || 400).json({
                 ok: false,
                 message: error.message
             });
@@ -97,7 +97,7 @@ class VeterinarianController {
         } catch (error) {
             console.log(error);
 
-            res.status(error.statusCode || 400).json({
+            res.status(error.code || 400).json({
                 ok: false,
                 message: error.message
             });
@@ -136,7 +136,7 @@ class VeterinarianController {
         } catch (error) {
             console.log(error)
 
-            return res.status(error.statusCode || 400).json({
+            return res.status(error.code || 400).json({
                 ok: false,
                 message: error.message
             })
@@ -164,7 +164,7 @@ class VeterinarianController {
         } catch (error) {
             console.log(error);
 
-            res.status(error.statusCode || 400).json({
+            res.status(error.code || 400).json({
                 ok: false,
                 message: error.message
             });
@@ -198,7 +198,7 @@ class VeterinarianController {
         } catch (error) {
             console.log(error);
 
-            res.status(error.statusCode || 400).json({
+            res.status(error.code || 400).json({
                 ok: false,
                 message: error.message
             });
