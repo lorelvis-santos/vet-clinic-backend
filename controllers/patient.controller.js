@@ -26,7 +26,7 @@ class PatientController {
             res.json({
                 ok: true,
                 patient: patient,
-                message: "User registered. Email sent"
+                message: "Paciente guardado"
             });
         } catch (error) {
             console.log(error);
@@ -46,7 +46,7 @@ class PatientController {
         if (!id || !isValidObjectId(id)) {
             res.status(400).json({
                 ok: false,
-                message: "Patient id must be provided"
+                message: "La id del paciente es requerida"
             });
         }
 
@@ -55,7 +55,7 @@ class PatientController {
         if (!patient) {
             res.status(404).json({
                 ok: false,
-                message: "Patient doesn't exist"
+                message: "El paciente no existe"
             });
         }
 
@@ -72,7 +72,7 @@ class PatientController {
         if (!id || !isValidObjectId(id)) {
             res.status(400).json({
                 ok: false,
-                message: "Patient id must be provided"
+                message: "La id del paciente es requerida"
             });
         }
 
@@ -81,7 +81,7 @@ class PatientController {
         // if (!patient) {
         //     res.status(404).json({
         //         ok: false,
-        //         message: "Patient doesn't exist"
+        //         message: "El paciente no existe"
         //     });
         // }
 
@@ -117,7 +117,7 @@ class PatientController {
 
             res.status(error.code).json({
                 ok: false,
-                message: "Patient couldn't be updated"
+                message: "No se pudo actualizar el paciente"
             });
         }
     }
@@ -129,7 +129,7 @@ class PatientController {
         if (!id || !isValidObjectId(id)) {
             res.status(400).json({
                 ok: false,
-                message: "Patient id must be provided"
+                message: "La id del paciente es requerida"
             });
         }
 
@@ -138,7 +138,7 @@ class PatientController {
         if (!patient) {
             res.status(404).json({
                 ok: false,
-                message: "Patient doesn't exist"
+                message: "El paciente no existe"
             });
         }
 
@@ -147,14 +147,14 @@ class PatientController {
             
             res.json({
                 ok: true,
-                message: "Patient has been deleted succesfully"
+                message: "Paciente eliminado correctamente"
             });
         } catch (error) {
             console.log(error);
 
             res.status(error.code).json({
                 ok: false,
-                message: "Patient couldn't be deleted"
+                message: "No se pudo eliminar el paciente"
             });
         }
     }

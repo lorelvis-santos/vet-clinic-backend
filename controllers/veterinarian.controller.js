@@ -1,7 +1,8 @@
 import { randomUUID } from "crypto";
 import Veterinarian from "../models/veterinarian.model.js";
 import HttpError from "../helpers/HttpError.js";
-import generateJWT from "../helpers/generateJWT.js";
+import generateJWT from "../helpers/generateJWT.js"; 
+import signUpEmail from "../emails/signUpEmail.js";
 
 class VeterinarianController {
     // Cosas que debemos hacer:
@@ -14,7 +15,7 @@ class VeterinarianController {
 
             if (exists) {
                 // 409 -> Conflict
-                throw new HttpError("Email already exists", 409);
+                throw new HttpError("Ya existe una cuenta con ese correo", 409);
             }
 
             const veterinarian = new Veterinarian(req.body);
@@ -22,10 +23,12 @@ class VeterinarianController {
             // Insertamos el nuevo veterinario en la base de datos
             const user = await veterinarian.save();
 
+            const result = await signUpEmail(user.name, user.email, user.token);
+
             res.json({
                 ok: true,
                 id: user.id,
-                message: "User registered. Email sent"
+                message: "Usuario registrado. Correo enviado"
             });
         } catch (error) {
             console.log(error);
@@ -43,13 +46,13 @@ class VeterinarianController {
 
         try {
             if (!token || token === null || token === "") {
-                throw new HttpError("Invalid token", 400);
+                throw new HttpError("Token inválido", 400);
             }
 
             const user = await Veterinarian.findOne({token});
 
             if (!user) {
-                throw new HttpError("Invalid token", 404);
+                throw new HttpError("Token inválido", 404);
             }
 
             user.token = null;
@@ -59,7 +62,7 @@ class VeterinarianController {
 
             res.json({
                 ok: true,
-                message: "User verified succesfully"
+                message: "Usuario verificado correctamente"
             });
         } catch (error) {
             console.log(error);
@@ -78,20 +81,20 @@ class VeterinarianController {
             const user = await Veterinarian.findOne({email});
 
             if (!user) {
-                throw new HttpError("User doesn't exist", 404);
+                throw new HttpError("El usuario no existe", 404);
             }
 
             if (!user.verified) {
-                throw new HttpError("User isn't verified", 403);
+                throw new HttpError("El usuario no está verificado", 403);
             }
 
             if (!(await user.checkPassword(password))) {
-                throw new HttpError("Passwords doesn't match", 401);
+                throw new HttpError("Las contraseñas no son iguales", 401);
             }
 
             res.json({
                 ok: true,
-                message: "User authenticated succesfully",
+                message: "Usuario autenticado correctamente",
                 token: generateJWT(user.id)
             })
         } catch (error) {
@@ -118,7 +121,7 @@ class VeterinarianController {
             const veterinarian = await Veterinarian.findOne({email});
 
             if (!veterinarian) {
-                throw new HttpError("User doesn't exist", 404);
+                throw new HttpError("El usuario no existe", 404);
             }
 
             // Generamos un nuevo token y se lo asignamos
@@ -130,7 +133,7 @@ class VeterinarianController {
 
             res.json({
                 ok: true,
-                message: "Sent email with instructions"
+                message: "Instrucciones enviadas al correo"
             });
 
         } catch (error) {
@@ -148,18 +151,18 @@ class VeterinarianController {
 
         try {
             if (!token || token === null || token === "") {
-                throw new HttpError("Invalid token", 400);
+                throw new HttpError("Token inválido", 400);
             }
 
             const user = await Veterinarian.findOne({token});
 
             if (!user) {
-                throw new HttpError("User not found", 404);
+                throw new HttpError("Usuario no encontrado", 404);
             }
 
             res.json({
                 ok: true,
-                message: "Token is valid and user exists"
+                message: "El token es válido y el usuario existe"
             });
         } catch (error) {
             console.log(error);
@@ -177,13 +180,13 @@ class VeterinarianController {
 
         try {
             if (!token || token === null || token === "") {
-                throw new HttpError("Invalid token", 400);
+                throw new HttpError("Token inválido", 400);
             }
 
             const user = await Veterinarian.findOne({token});
 
             if (!user) {
-                throw new HttpError("User not found", 404);
+                throw new HttpError("Usuario no encontrado", 404);
             }
 
             user.token = null;
@@ -193,7 +196,7 @@ class VeterinarianController {
 
             res.json({
                 ok: true,
-                message: "Password changed succesfully"
+                message: "Contraseña cambiada correctamente"
             });
         } catch (error) {
             console.log(error);
