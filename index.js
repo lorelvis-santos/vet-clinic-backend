@@ -1,10 +1,12 @@
 import dotenv from "dotenv"
 import express from "express";
 import connectToDatabase from "./config/db.js";
+import cors from "cors";
 
 // Rutas
 import veterinarianRoutes from "./routes/veterinarian.routes.js"
 import patientRoutes from "./routes/patient.routes.js";
+import HttpError from "./helpers/HttpError.js";
 
 dotenv.config();
 
@@ -16,6 +18,24 @@ const port = process.env.PORT || 4000;
 
 connectToDatabase();
 
+const allowedDomains = new Set([
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
+    "http://localhost:4000"
+]);
+
+const corsOptions = {
+    origin: function(origin, callback) {
+        // Verifica que el dominio exista dentro de los dominios permitidos
+        if (allowedDomains.has(origin)) {
+            callback(null, true);
+        } else {
+            callback(new HttpError("Invalid origin", 403))
+        }
+    }
+}
+
+app.use(cors(corsOptions));
 app.use("/api/veterinarians", veterinarianRoutes);
 app.use("/api/patients", patientRoutes);
 
