@@ -19,9 +19,7 @@ const port = process.env.PORT || 4000;
 connectToDatabase();
 
 const allowedDomains = new Set([
-    "http://127.0.0.1:5173",
-    "http://localhost:5173",
-    "http://localhost:4000"
+    process.env.FRONTEND_URL,
 ]);
 
 const corsOptions = {
