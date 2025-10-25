@@ -3,6 +3,7 @@ import Veterinarian from "../models/veterinarian.model.js";
 import HttpError from "../helpers/HttpError.js";
 import generateJWT from "../helpers/generateJWT.js"; 
 import signUpEmail from "../emails/signUpEmail.js";
+import recoveryEmail from "../emails/recoveryEmail.js";
 
 class VeterinarianController {
     // Cosas que debemos hacer:
@@ -131,6 +132,8 @@ class VeterinarianController {
 
             await veterinarian.save();
 
+            await recoveryEmail(veterinarian.name, veterinarian.email, veterinarian.token);
+
             res.json({
                 ok: true,
                 message: "Instrucciones enviadas al correo"
@@ -157,7 +160,7 @@ class VeterinarianController {
             const user = await Veterinarian.findOne({token});
 
             if (!user) {
-                throw new HttpError("Usuario no encontrado", 404);
+                throw new HttpError("Token inválido", 404);
             }
 
             res.json({
