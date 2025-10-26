@@ -90,7 +90,7 @@ class VeterinarianController {
             }
 
             if (!(await user.checkPassword(password))) {
-                throw new HttpError("Las contraseñas no son iguales", 401);
+                throw new HttpError("Contraseña incorrecta", 401);
             }
 
             res.json({
@@ -111,7 +111,7 @@ class VeterinarianController {
     async profile(req, res) {
         const { veterinarian } = req;
 
-        res.json({ profile: veterinarian });
+        res.json(veterinarian);
     }
 
     async forgotPassword(req, res) {
