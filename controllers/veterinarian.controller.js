@@ -96,7 +96,12 @@ class VeterinarianController {
             res.json({
                 ok: true,
                 message: "Usuario autenticado correctamente",
-                token: generateJWT(user.id)
+                user: {
+                    _id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    token: generateJWT(user.id)
+                }
             })
         } catch (error) {
             console.log(error);

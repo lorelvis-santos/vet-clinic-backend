@@ -18,7 +18,7 @@ const patientsSchema = mongoose.Schema({
         required: true,
         default: Date.now()
     },
-    symptons: {
+    symptoms: {
         type: String,
         required: true
     },

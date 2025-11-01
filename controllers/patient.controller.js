@@ -7,7 +7,9 @@ class PatientController {
         const { veterinarian } = req;
 
         // Buscamos sus pacientes
-        const patients = await Patient.find({veterinarianId: veterinarian._id});
+        const patients = await Patient.find({veterinarianId: veterinarian._id}, {
+            __v: 0
+        });
 
         res.json({
             ok: true,
