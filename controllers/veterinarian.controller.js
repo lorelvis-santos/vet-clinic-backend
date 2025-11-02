@@ -100,6 +100,8 @@ class VeterinarianController {
                     _id: user._id,
                     name: user.name,
                     email: user.email,
+                    website: user.website,
+                    phone: user.phone,
                     token: generateJWT(user.id)
                 }
             })
@@ -117,6 +119,51 @@ class VeterinarianController {
         const { veterinarian } = req;
 
         res.json(veterinarian);
+    }
+
+    async updateProfile(req, res) {
+        const { veterinarian } = req;
+        const { profile } = req.body;
+
+        if (!profile) {
+            return res.status(400).json({
+                ok: false,
+                message: "El parámetro 'profile' es obligatorio" 
+            })
+        }
+
+        if (veterinarian._id != profile?._id) {
+            return res.status(403).json({
+                ok: false,
+                message: "No puedes actualizar otro usuario, solo el tuyo"
+            })
+        }
+
+        if (veterinarian.email !== profile?.email && await Veterinarian.exists({ email: profile.email})) {
+            return res.status(409).json({
+                ok: false,
+                message: "Ya existe una cuenta con ese correo"
+            })
+        }
+
+        try {
+            const newProfile = await Veterinarian.findByIdAndUpdate(veterinarian._id, profile, {
+                new: true,
+                runValidators: true
+            }).select('-__v -token -password -verified');
+
+            res.json({
+                ok: true,
+                profile: newProfile
+            })
+        } catch (error) {
+            console.log(error);
+
+            res.status(error.code).json({
+                ok: false,
+                message: "No se pudo actualizar el perfil del usuario"
+            });
+        }
     }
 
     async forgotPassword(req, res) {

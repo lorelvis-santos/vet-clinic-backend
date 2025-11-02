@@ -16,5 +16,6 @@ router.route("/forgot-password/:token")
 
 // Parte privada
 router.get("/profile", requireAuth, controller.profile);
+router.put("/profile", requireAuth, controller.updateProfile);
 
 export default router;
