@@ -6,13 +6,20 @@ class Email {
             return Email.instance;
         }
 
+        const development = true;
+        const hasAuth = !!(process.env.EMAIL_USER && process.env.EMAIL_PASS);
+
         this.transporter = nodemailer.createTransport({
             host: process.env.EMAIL_HOST,
             port: process.env.EMAIL_PORT,
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            }
+            secure: !development,
+            ignoreTLS: development,
+            auth: hasAuth 
+              ? {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
+                }
+                : undefined,
         });
     }
 
