@@ -18,4 +18,6 @@ router.route("/forgot-password/:token")
 router.get("/profile", requireAuth, controller.profile);
 router.put("/profile", requireAuth, controller.updateProfile);
 
+router.put("/change-password", requireAuth, controller.updatePassword);
+
 export default router;

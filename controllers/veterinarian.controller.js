@@ -166,6 +166,51 @@ class VeterinarianController {
         }
     }
 
+    async updatePassword(req, res) {
+        const _id = req.veterinarian._id;
+        const { currentPassword, newPassword } = req.body;
+
+        try {
+            const veterinarian = await Veterinarian.findById(_id);
+
+            // Verificar que exista
+            if (!veterinarian) {
+                // 404 -> not found
+                throw new HttpError("Veterinario no encontrado", 404);
+            }
+
+            const passwordsMatch = await veterinarian.checkPassword(currentPassword);
+
+            // Comprobar contraseña
+            if (!passwordsMatch) {
+                throw new HttpError("La contraseña actual no coincide", 401);
+            }
+
+            // Cambiar contraseña
+            veterinarian.password = newPassword;
+            await veterinarian.save();
+
+            res.json({
+                ok: true,
+                message: "Contraseña cambiada exitosamente"
+            });
+
+        } catch (error) {
+            console.log(error);
+
+            res.status(error.code).json({
+                ok: false,
+                message: error.message
+            });
+        }
+
+        res.json({
+            veterinarian,
+            currentPassword,
+            newPassword
+        })
+    }
+
     async forgotPassword(req, res) {
         const { email } = req.body;
 
