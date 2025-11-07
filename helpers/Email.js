@@ -6,7 +6,7 @@ class Email {
             return Email.instance;
         }
 
-        const development = true;
+        const development = false;
         const hasAuth = !!(process.env.EMAIL_USER && process.env.EMAIL_PASS);
 
         this.transporter = nodemailer.createTransport({
